@@ -28,7 +28,7 @@ export function getRetailerLink(retailerUrl: string | null) {
   if (!retailerUrl) return null;
   try {
     const url = new URL(retailerUrl);
-    if (!['https:', 'http:'].includes(url.protocol)) return null;
+    if (url.protocol !== 'https:' || url.username || url.password) return null;
     const host = url.hostname.toLowerCase();
     return { href: url.href, name: host === 'ikea.com' || host.endsWith('.ikea.com') ? 'IKEA' : 'retailer' };
   } catch {

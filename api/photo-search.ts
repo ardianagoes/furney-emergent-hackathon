@@ -1,5 +1,4 @@
-// Vercel Node serverless entry point. Never bundled into the React application.
-import { createPhotoHandler } from '../server/photo-handler.js';
-export const config={maxDuration:30};
+import { disabledPhotoRoute } from '../server/disabled-photo-route.js';
 
-export default createPhotoHandler();
+export const config = { maxDuration: 30 };
+export default disabledPhotoRoute;

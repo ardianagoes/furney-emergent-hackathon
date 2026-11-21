@@ -1,7 +1,7 @@
 import {readFileSync,readdirSync,statSync} from 'node:fs';
 import {join} from 'node:path';
-const forbidden=['api.openai.com/v1/responses','process.env.OPENAI_API_KEY','OPENAI_API_KEY','FURNEY_SERVER_ONLY_CANARY','FURNEY_SERVER_MODEL_CANARY'];
-for(const name of ['OPENAI_API_KEY','OPENAI_MODEL'])if(process.env[name]?.length>12)forbidden.push(process.env[name]);
+const forbidden=['api.openai.com/v1/responses','OPENAI_API_KEY','FURNEY_SERVER_ONLY_CANARY','FURNEY_SERVER_MODEL_CANARY','FURNEY_MISPREFIXED_KEY_CANARY','Analyze Room'];
+for(const name of ['OPENAI_API_KEY','OPENAI_MODEL','VITE_OPENAI_API_KEY'])if(process.env[name]?.length>12)forbidden.push(process.env[name]);
 let count=0;
 function walk(dir){
   for(const name of readdirSync(dir)){

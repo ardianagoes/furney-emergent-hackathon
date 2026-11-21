@@ -7,11 +7,11 @@ import {createPhotoHandler} from './photo-handler';
 import roomPhotoHandler from '../api/room-photo';
 const image='data:image/jpeg;base64,'+readFileSync(new URL('../src/test/fixtures/furnished-room.jpg',import.meta.url)).toString('base64');
 const detection={view:'perspective',floor:null,rearEdge:null,notes:'Floor corners are hidden. Approximate contacts only.',furniture:[{label:'Wing chair',footprint:[{x:0.2,y:0.8},{x:0.6,y:0.8},{x:0.6,y:0.9},{x:0.2,y:0.9}],confidence:0.8}]};
-it('keeps the new production endpoint disabled until explicitly enabled',async()=>{
+it('keeps the deployed room endpoint disabled with the experiment off',async()=>{
   vi.stubEnv('ENABLE_ROOM_ANALYSIS','false');
   try {
     let output='';const res={statusCode:200,setHeader:()=>{},end:(s:string)=>{output=s;}} as unknown as ServerResponse;
-    await roomPhotoHandler({} as IncomingMessage,res);
+    await roomPhotoHandler({method:'POST'} as IncomingMessage,res);
     expect(res.statusCode).toBe(503);
     expect(JSON.parse(output).message).toContain('disabled');
   } finally {vi.unstubAllEnvs();}

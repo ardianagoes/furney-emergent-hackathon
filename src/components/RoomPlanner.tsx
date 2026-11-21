@@ -111,7 +111,7 @@ export function RoomPlanner({ room, products, placedItems, onItemChange, onItemR
     {photo&&aligningFloor&&<FloorCalibrator key={photo+JSON.stringify(floorCorners)} photo={photo} corners={floorCorners} width={room.widthM} depth={room.depthM} onApply={corners=>{manualCalibration.current=true;setFloorCorners(corners);setAligningFloor(false);setShowGrid(true);}} onCancel={()=>setAligningFloor(false)}/>}
     {photo&&calibration&&<div className="scene-tools"><button type="button" onClick={()=>{manualCalibration.current=true;setFloorCorners(null);setAligningFloor(false);}}>Use cropped fallback</button></div>}
     {photo&&analysis&&suggestedFloorCorners(analysis)&&<div className="scene-tools"><button type="button" onClick={()=>{manualCalibration.current=false;setFloorCorners(suggestedFloorCorners(analysis));setAligningFloor(true);}}>Review AI floor suggestion</button></div>}
-    {photo&&import.meta.env.VITE_ENABLE_ROOM_ANALYSIS==='true'&&<RoomPhotoAnalysis photo={photo} analysis={analysis} areas={occupiedAreas} room={room} onAnalysis={applyAnalysis} onAlign={()=>setAligningFloor(true)} onClear={clearAnalysis} onAreasChange={onOccupiedAreasChange}/>}
+    {photo&&import.meta.env.DEV&&import.meta.env.VITE_ENABLE_ROOM_ANALYSIS==='true'&&<RoomPhotoAnalysis photo={photo} analysis={analysis} areas={occupiedAreas} room={room} onAnalysis={applyAnalysis} onAlign={()=>setAligningFloor(true)} onClear={clearAnalysis} onAreasChange={onOccupiedAreasChange}/>}
     {analysisNotice&&<p role="status" className="scene-notice">{analysisNotice}</p>}
     <div className="scene-viewport" ref={viewport}>
       <div className="scene-renderer"><SceneBoundary><Suspense fallback={<div className="scene-loading" role="status">Loading your 3D room…</div>}>
