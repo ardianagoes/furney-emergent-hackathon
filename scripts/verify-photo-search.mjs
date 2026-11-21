@@ -1,5 +1,5 @@
 // Opt-in REAL image-analysis smoke test. This never mocks provider responses.
-// Run only against your own configured Furney dev server or Vercel deployment.
+// Run only against your own configured Furney development server on loopback.
 import { readFile } from 'node:fs/promises';
 
 if(process.env.CONFIRM_BILLABLE_AI_TEST!=='yes'){
@@ -8,13 +8,23 @@ if(process.env.CONFIRM_BILLABLE_AI_TEST!=='yes'){
 }
 
 const baseUrl = process.env.PHOTO_SEARCH_BASE_URL || 'http://127.0.0.1:5173';
-const endpoint = new URL('/api/photo-search', baseUrl);
+let endpoint;
+try {
+  const base = new URL(baseUrl);
+  if (base.protocol !== 'http:' || !['127.0.0.1', '[::1]'].includes(base.hostname) || base.username || base.password) {
+    throw new Error('Expected an HTTP loopback address');
+  }
+  endpoint = new URL('/api/photo-search', base);
+} catch {
+  console.error('Not run: use an HTTP loopback address such as http://127.0.0.1:5173.');
+  process.exit(1);
+}
 let failures = 0;
 for (const [file, expected] of [['00457235.jpg', 'Chairs'], ['80519531.jpg', 'Sofas']]) {
   try {
     const image = await readFile(new URL(`../src/assets/ikea/${file}`, import.meta.url));
     const response = await fetch(endpoint, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST', redirect: 'error', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ dataUrl: `data:image/jpeg;base64,${image.toString('base64')}` }),
       signal: AbortSignal.timeout(30_000),
     });

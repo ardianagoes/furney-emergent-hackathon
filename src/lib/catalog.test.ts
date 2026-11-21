@@ -38,6 +38,11 @@ describe('retailer links', () => {
     expect(getRetailerLink(null)).toBeNull();
     expect(getRetailerLink('not a URL')).toBeNull();
     expect(getRetailerLink('javascript:alert(1)')).toBeNull();
-    expect(getRetailerLink('https://fakeikea.com/item')?.name).toBe('retailer');
+    expect(getRetailerLink('https://example.test/item')?.name).toBe('retailer');
+    expect(getRetailerLink('http://www.ikea.com/item')).toBeNull();
+    expect(getRetailerLink('https://user:example@www.ikea.com/item')).toBeNull();
+    for (const product of furnitureProducts) {
+      expect(getRetailerLink(product.retailerUrl)).toEqual({ href: product.retailerUrl, name: 'IKEA' });
+    }
   });
 });

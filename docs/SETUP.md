@@ -34,7 +34,7 @@ Local analysis accepts nonanimated JPG/PNG/WebP up to 3 MiB, 4096 pixels per edg
 
 The separate Room photo control accepts a local reference up to 8 MiB. Align Floor uses four corners and entered measurements; it is not a 3D reconstruction. Local reference photos are not sent to AI unless a separate enabled local analysis is requested.
 
-Experimental room analysis requires local AI above, plus `VITE_ENABLE_ROOM_ANALYSIS=true` and server-only `ENABLE_ROOM_ANALYSIS=true` for controlled development. It remains unverified with live AI in this audit and closed on public deployments. See [FLOOR_CALIBRATION.md](FLOOR_CALIBRATION.md) for its shared geometry contract.
+Experimental room analysis requires local AI above, plus `VITE_ENABLE_ROOM_ANALYSIS=true` and server-only `ENABLE_ROOM_ANALYSIS=true` for controlled development. Vite exposes only the normalized development flag. Production builds omit the Analyze Room control. See [FLOOR_CALIBRATION.md](FLOOR_CALIBRATION.md) for its shared geometry contract.
 
 ## Verification
 
@@ -50,7 +50,7 @@ npm run preview
 
 Regular tests mock OpenAI and incur no provider charges. The build/public checks reject server adapter identifiers, secret canaries and suspicious credential patterns in browser artifacts. The heuristic secret scanner includes locally available deleted/history blobs; it cannot prove all secrets absent.
 
-`npm run preview` serves the static SPA without analysis APIs. The optional `npm run test:vision` can send two billable requests; it refuses to run without `CONFIRM_BILLABLE_AI_TEST=yes`. It is never part of CI or this audit. Do not run it against someone else's server.
+`npm run preview` serves the static SPA without analysis APIs. The optional `npm run test:vision` can send two billable requests. It requires `CONFIRM_BILLABLE_AI_TEST=yes` and accepts only HTTP on `127.0.0.1` or `[::1]`, without redirects. CI uses mocked provider responses.
 
 ## Deployment and future public AI
 

@@ -4,7 +4,14 @@ import tailwindcss from '@tailwindcss/vite';
 import { createPhotoHandler } from './server/photo-handler';
 import { analyzeRoomPhoto } from './server/room-photo.server';
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ command, isPreview, mode }) => ({
+  // Export a single, normalized development flag. No arbitrary VITE_ values.
+  envPrefix: [],
+  define: command === 'serve' && !isPreview && mode !== 'test' ? {
+    'import.meta.env.VITE_ENABLE_ROOM_ANALYSIS': JSON.stringify(
+      loadEnv(mode, process.cwd(), 'VITE_ENABLE_ROOM_ANALYSIS').VITE_ENABLE_ROOM_ANALYSIS === 'true' ? 'true' : 'false',
+    ),
+  } : {},
   plugins: [react(), tailwindcss(), {
     name: 'furney-photo-search-dev-api',
     configureServer(server) {

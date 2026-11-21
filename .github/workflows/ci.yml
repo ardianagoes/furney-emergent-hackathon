@@ -30,6 +30,8 @@ jobs:
         env:
           OPENAI_API_KEY: FURNEY_SERVER_ONLY_CANARY
           OPENAI_MODEL: FURNEY_SERVER_MODEL_CANARY
+          VITE_OPENAI_API_KEY: FURNEY_MISPREFIXED_KEY_CANARY
+          VITE_ENABLE_ROOM_ANALYSIS: 'true'
         run: |
           npm run build
           npm run check:public

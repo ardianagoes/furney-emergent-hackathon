@@ -22,7 +22,7 @@ function res(){
 }
 afterEach(()=>{vi.restoreAllMocks();vi.unstubAllGlobals();vi.unstubAllEnvs();vi.useRealTimers();});
 
-it.each([photoRoute,roomRoute])('blocks real deployed entry points even with keys, local opt-in and experiment flags, before body reads',async route=>{
+it.each([['furniture',photoRoute],['room',roomRoute]] as const)('blocks the deployed %s endpoint even with keys, opt-in and experiment flags, before body reads',async (_name,route)=>{
   vi.stubEnv('OPENAI_API_KEY','test-only-key');vi.stubEnv('OPENAI_MODEL','configured-model');
   vi.stubEnv('ENABLE_LOCAL_AI','true');vi.stubEnv('ENABLE_ROOM_ANALYSIS','true');vi.stubEnv('VITE_ENABLE_ROOM_ANALYSIS','true');
   const fetchImpl=vi.fn();vi.stubGlobal('fetch',fetchImpl);
@@ -32,6 +32,11 @@ it.each([photoRoute,roomRoute])('blocks real deployed entry points even with key
   expect(output.response.statusCode).toBe(503);expect(output.result()).toMatchObject({ok:false,code:'not_configured'});
   expect(bodyReads).toBe(0);expect(request.readableFlowing).not.toBe(true);expect(fetchImpl).not.toHaveBeenCalled();
   expect(output.headers['Cache-Control']).toBe('no-store');expect(output.raw()).not.toContain('test-only-key');
+  request.method='GET';
+  const getOutput=res();await route(request,getOutput.response);
+  expect(getOutput.response.statusCode).toBe(405);
+  expect(getOutput.headers).toMatchObject({Allow:'POST','X-Content-Type-Options':'nosniff'});
+  expect(fetchImpl).not.toHaveBeenCalled();
 });
 
 it('has no cold-start/IP-rotation escape from the public paid-call prohibition',async()=>{

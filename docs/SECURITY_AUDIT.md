@@ -1,5 +1,7 @@
 # Security and cost audit — November 10, 2026
 
+For current production and retained-deployment findings, see the [November 21 follow-up](SECURITY_FOLLOWUP.md). This original report describes the state before PR #11 was deployed.
+
 Repository: `ardianagoes/furney-emergent-hackathon`. Baseline: latest main `548ac8d`.
 This is a code/history review and focused test pass, not a penetration test,
 account audit, or absolute security guarantee. No billable AI requests were made.
